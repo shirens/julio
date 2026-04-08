@@ -115,7 +115,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="index.php?page=mapael" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Mata Pelajaran</p>
                 </a>
@@ -144,7 +144,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="logout.php" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Logout
@@ -189,7 +189,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <h5 class="card-title">Card title</h5>
 
                 <p class="card-text">
-                  Selamat Datang di Sistem Jadwal Guru pada SMA/SMK XYZ 
+                  <?php
+                  if (isset($_GET['page'])) {
+                     $page = $_GET['page'];
+                  } else {
+                      $page = "";
+                  }
+                  if ($page =="") {
+                    include "page/dashbord.php";
+                  } elseif (!file_exists("page/$page.php")) {
+                    echo "File Tidak Ditemukan";
+                  } else {
+                    include "page/$page.php";
+                  }
+                  ?> 
                 </p>
 
                 

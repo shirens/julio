@@ -80,9 +80,17 @@ if(isset($_POST['Username'])) {
     } else {
         $userquery = mysqli_fetch_array(mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$Username' AND password = '$Password' "));
         if($userquery) {
-            $_SESSION['level'] = 'admin';
+            $_SESSION['id_user']  = $userquery['id_user'];
+            $_SESSION['level']    = $userquery['role'];
             $_SESSION['Username'] = $Username;
-            header("Location:index.php");
+
+            // kalau password masih default (1234) dan bukan admin, wajib ganti password dulu
+            if ($userquery['password'] == '1234' && $userquery['role'] != 'admin') {
+                header("Location: ganti_password.php");
+            } else {
+                header("Location: index.php");
+            }
+            exit;
         } else {
             echo '<div class="alert alert-danger alert-dismissible">
             <button type="button" class="close" data-dismiss="alert"

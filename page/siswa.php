@@ -1,3 +1,10 @@
+<?php
+if (!isset($koneksi)) {
+    header("Location: ../index.php?page=siswa");
+    exit;
+}
+?>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">

@@ -30,34 +30,53 @@ $_SESSION["KODE"] = $hasilkode;
 // =====================
 if (isset($_POST['tambah'])) {
     $nis = $_POST['nis'];
-    $id_user = $_POST['id_user'];
     $nm_siswa = $_POST['nm_siswa'];
     $jenkel = $_POST['jenkel'];
     $hp = $_POST['hp'];
     $id_kelas = $_POST['id_kelas'];
 
-    $insert = mysqli_query($koneksi, "
-        INSERT INTO siswa
-        (nis, id_user, nm_siswa, jenkel, hp, id_kelas)
-        VALUES
-        ('$nis', '$id_user', '$nm_siswa', '$jenkel', '$hp', '$id_kelas')
+    // 1. Insert dulu ke tabel users (username = nis, password default 1234, role siswa)
+    $insertUser = mysqli_query($koneksi, "
+        INSERT INTO users (username, password, role)
+        VALUES ('$nis', '1234', 'siswa')
     ");
 
-    if ($insert) {
-        echo '
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h5><i class="icon fas fa-check"></i> Sukses</h5>
-            Data nis berhasil disimpan
-        </div>';
+    if ($insertUser) {
+        $id_user = mysqli_insert_id($koneksi);
 
-        echo '<meta http-equiv="refresh" content="1;url=index.php?page=siswa">';
+        // 2. Insert ke tabel siswa dengan id_user yang baru dibuat
+        $insert = mysqli_query($koneksi, "
+            INSERT INTO siswa
+            (nis, id_user, nm_siswa, jenkel, hp, id_kelas)
+            VALUES
+            ('$nis', '$id_user', '$nm_siswa', '$jenkel', '$hp', '$id_kelas')
+        ");
+
+        if ($insert) {
+            echo '
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-check"></i> Sukses</h5>
+                Data siswa berhasil disimpan. Username login: ' . $nis . ' / Password: 1234
+            </div>';
+
+            echo '<meta http-equiv="refresh" content="2;url=index.php?page=siswa">';
+        } else {
+            // Kalau insert siswa gagal, hapus user yang sudah dibuat biar tidak nyangkut
+            mysqli_query($koneksi, "DELETE FROM users WHERE id_user = '$id_user'");
+            echo '
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-times"></i> Gagal</h5>
+                Data gagal disimpan: ' . mysqli_error($koneksi) . '
+            </div>';
+        }
     } else {
         echo '
         <div class="alert alert-danger alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h5><i class="icon fas fa-times"></i> Gagal</h5>
-            Data gagal disimpan: ' . mysqli_error($koneksi) . '
+            Gagal membuat akun user: ' . mysqli_error($koneksi) . '
         </div>';
     }
 }
@@ -80,16 +99,7 @@ if (isset($_POST['tambah'])) {
                                 placeholder="Masukkan NIS Anda"
                                class="form-control" 
                                required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_user">ID User</label>
-                        <input type="text" 
-                               name="id_user" 
-                               id="id_user"
-                               placeholder="Masukkan ID User"
-                               class="form-control"
-                               required>
+                        <small class="form-text text-muted">NIS ini akan otomatis jadi username login siswa, dengan password default 1234.</small>
                     </div>
 
                     <div class="form-group">
@@ -145,6 +155,7 @@ if (isset($_POST['tambah'])) {
 
             <div class="card-footer">
               <input type="submit" class="btn btn-primary" name="tambah" value="simpan">
+              <a href="index.php?page=siswa" class="btn btn-secondary">Kembali</a>
             </div>
 
           </form>

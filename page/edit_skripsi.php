@@ -53,14 +53,21 @@
 </div>
 
 <div class="form-group">
-    <label for="semester076">Semester</label>
-    <input type="text" name="semester076" value="<?= $edit['semester076']; ?>" id="semester076" placeholder="Semester" class="form-control">
-</div>
-
-<div class="form-group">
-    <label for="thn_ajaran076">Tahun Ajaran</label>
-    <input type="text" name="thn_ajaran076" value="<?= $edit['thn_ajaran076']; ?>" id="thn_ajaran076" placeholder="Tahun Ajaran" class="form-control">
-</div>
+                        <label for="semester076">Semester</label>
+                        <select name="semester076" id="semester076" class="form-control" required>
+                            <option value="">-- Pilih Semester --</option>
+                            <option value="Laki-Laki">Genap</option>
+                            <option value="Perempuan">Ganjil</option>
+                        </select>
+                    </div>
+                        <div class="form-group">
+                        <label for="thn_ajaran076">Tahun Ajaran</label>
+                        <select name="thn_ajaran076" id="thn_ajaran076" class="form-control" required>
+                            <option value="">-- Pilih Tahun Ajaran --</option>
+                            <option value="Laki-Laki">2024/2025</option>
+                            <option value="Perempuan">2025/2026</option>
+                        </select>
+                    </div>
 
 <div class="card-footer">
     <input type="submit" class="btn btn-primary" name="tambah" value="simpan">

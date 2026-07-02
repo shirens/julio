@@ -132,10 +132,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Siswa</p>
                 </a>
               </li>
-              <li class="nav-item">
+               <li class="nav-item">
                 <a href="index.php?page=skripsi" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Skripsi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+              <li class="nav-item">
+                <a href="index.php?page=detail_jadwal" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Detail Jadwal</p>
                 </a>
               </li>
             </ul>

@@ -1,3 +1,10 @@
+<?php
+if (!isset($koneksi)) {
+    header("Location: ../index.php?page=guru");
+    exit;
+}
+?>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -34,7 +41,6 @@ if(isset($_GET['action'])) {
                     <tr>
                         <th>NO</th>
                         <th>Kd Guru</th>
-                        <th>ID User</th>
                         <th>Nama Guru</th>
                         <th>Jenkel</th>
                         <th>Pend Terakhir</th>
@@ -53,7 +59,6 @@ if(isset($_GET['action'])) {
                     <tr>
                         <td><?= $no; ?></td>
                         <td><?= $result['kd_guru']; ?></td>
-                        <td><?= $result['id_user']; ?></td>
                         <td><?= $result['nm_guru']; ?></td>
                         <td><?= $result['jenkel']; ?></td>
                         <td><?= $result['pend_terakhir']; ?></td>

@@ -30,35 +30,54 @@ $_SESSION["KODE"] = $hasilkode;
 // =====================
 if (isset($_POST['tambah'])) {
     $kd_guru = $_POST['kd_guru'];
-    $id_user = $_POST['id_user'];
     $nm_guru = $_POST['nm_guru'];
     $jenkel = $_POST['jenkel'];
     $pend_terakhir = $_POST['pend_terakhir'];
     $hp = $_POST['hp'];
     $alamat = $_POST['alamat'];
 
-    $insert = mysqli_query($koneksi, "
-        INSERT INTO guru
-        (kd_guru, id_user, nm_guru, jenkel, pend_terakhir, hp, alamat)
-        VALUES
-        ('$kd_guru', '$id_user', '$nm_guru', '$jenkel', '$pend_terakhir', '$hp', '$alamat')
+    // 1. Insert dulu ke tabel users (username = kd_guru, password default 1234, role guru)
+    $insertUser = mysqli_query($koneksi, "
+        INSERT INTO users (username, password, role)
+        VALUES ('$kd_guru', '1234', 'guru')
     ");
 
-    if ($insert) {
-        echo '
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h5><i class="icon fas fa-check"></i> Sukses</h5>
-            Data guru berhasil disimpan
-        </div>';
+    if ($insertUser) {
+        $id_user = mysqli_insert_id($koneksi);
 
-        echo '<meta http-equiv="refresh" content="1;url=index.php?page=guru">';
+        // 2. Insert ke tabel guru dengan id_user yang baru dibuat
+        $insert = mysqli_query($koneksi, "
+            INSERT INTO guru
+            (kd_guru, id_user, nm_guru, jenkel, pend_terakhir, hp, alamat)
+            VALUES
+            ('$kd_guru', '$id_user', '$nm_guru', '$jenkel', '$pend_terakhir', '$hp', '$alamat')
+        ");
+
+        if ($insert) {
+            echo '
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-check"></i> Sukses</h5>
+                Data guru berhasil disimpan. Username login: ' . $kd_guru . ' / Password: 1234
+            </div>';
+
+            echo '<meta http-equiv="refresh" content="2;url=index.php?page=guru">';
+        } else {
+            // Kalau insert guru gagal, hapus user yang sudah dibuat biar tidak nyangkut
+            mysqli_query($koneksi, "DELETE FROM users WHERE id_user = '$id_user'");
+            echo '
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-times"></i> Gagal</h5>
+                Data gagal disimpan: ' . mysqli_error($koneksi) . '
+            </div>';
+        }
     } else {
         echo '
         <div class="alert alert-danger alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h5><i class="icon fas fa-times"></i> Gagal</h5>
-            Data gagal disimpan: ' . mysqli_error($koneksi) . '
+            Gagal membuat akun user: ' . mysqli_error($koneksi) . '
         </div>';
     }
 }
@@ -81,16 +100,7 @@ if (isset($_POST['tambah'])) {
                                value="<?= $hasilkode; ?>"
                                class="form-control" 
                                readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_user">ID User</label>
-                        <input type="text" 
-                               name="id_user" 
-                               id="id_user"
-                               placeholder="Masukkan ID User"
-                               class="form-control"
-                               required>
+                        <small class="form-text text-muted">Kode ini akan otomatis jadi username login guru, dengan password default 1234.</small>
                     </div>
 
                     <div class="form-group">

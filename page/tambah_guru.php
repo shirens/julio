@@ -36,7 +36,6 @@ if (isset($_POST['tambah'])) {
     $hp = $_POST['hp'];
     $alamat = $_POST['alamat'];
 
-    // 1. Insert dulu ke tabel users (username = kd_guru, password default 1234, role guru)
     $insertUser = mysqli_query($koneksi, "
         INSERT INTO users (username, password, role)
         VALUES ('$kd_guru', '1234', 'guru')
@@ -45,7 +44,6 @@ if (isset($_POST['tambah'])) {
     if ($insertUser) {
         $id_user = mysqli_insert_id($koneksi);
 
-        // 2. Insert ke tabel guru dengan id_user yang baru dibuat
         $insert = mysqli_query($koneksi, "
             INSERT INTO guru
             (kd_guru, id_user, nm_guru, jenkel, pend_terakhir, hp, alamat)

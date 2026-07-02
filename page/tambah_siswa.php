@@ -35,7 +35,6 @@ if (isset($_POST['tambah'])) {
     $hp = $_POST['hp'];
     $id_kelas = $_POST['id_kelas'];
 
-    // 1. Insert dulu ke tabel users (username = nis, password default 1234, role siswa)
     $insertUser = mysqli_query($koneksi, "
         INSERT INTO users (username, password, role)
         VALUES ('$nis', '1234', 'siswa')
@@ -44,7 +43,6 @@ if (isset($_POST['tambah'])) {
     if ($insertUser) {
         $id_user = mysqli_insert_id($koneksi);
 
-        // 2. Insert ke tabel siswa dengan id_user yang baru dibuat
         $insert = mysqli_query($koneksi, "
             INSERT INTO siswa
             (nis, id_user, nm_siswa, jenkel, hp, id_kelas)
